@@ -151,12 +151,13 @@ document.addEventListener('keydown', event => {
 
 // Card class
 class MenuCard {
-    constructor(name, descr, cost, img, alt) {
+    constructor(name, descr, cost, img, alt, ...classes) {
         this.name = name;
         this.descr = descr;
         this.cost = cost;
         this.img = img;
         this.alt = alt;
+        this.classes = classes;
     }
 
     createCard() {
@@ -173,6 +174,9 @@ class MenuCard {
 
         const elem = document.createElement('div');
         elem.classList.add('menu__item');
+        for (let currClass of this.classes) {
+            elem.classList.add(currClass);
+        }
         elem.innerHTML = innerHTML;
 
         return elem;
