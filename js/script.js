@@ -148,3 +148,65 @@ document.addEventListener('keydown', event => {
 });
 
 
+
+// Card class
+class MenuCard {
+    constructor(name, descr, cost, img, alt) {
+        this.name = name;
+        this.descr = descr;
+        this.cost = cost;
+        this.img = img;
+        this.alt = alt;
+    }
+
+    createCard() {
+        const innerHTML = `
+                <img src="img/tabs/${this.img}" alt="${this.alt}">
+                <h3 class="menu__item-subtitle">Меню “${this.name}”</h3>
+                <div class="menu__item-descr">${this.descr}</div>
+                <div class="menu__item-divider"></div>
+                <div class="menu__item-price">
+                    <div class="menu__item-cost">Цена:</div>
+                    <div class="menu__item-total"><span>${this.cost}</span> руб/день</div>
+                </div>
+        `;
+
+        const elem = document.createElement('div');
+        elem.classList.add('menu__item');
+        elem.innerHTML = innerHTML;
+
+        return elem;
+    }
+}
+
+const menuContainer = document.querySelector('.menu__field .container');
+const firstMenu = new MenuCard(
+    'Премиум',
+    'В меню “Премиум” мы используем не только красивый дизайн упаковки, но и качественное исполнение блюд. Красная рыба, морепродукты, фрукты - ресторанное меню без похода в ресторан!',
+    '1450',
+    'elite.jpg',
+    'elite'
+);
+
+const secondMenu = new MenuCard(
+    'Фитнес',
+    'Меню "Фитнес" - это новый подход к приготовлению блюд: больше свежих овощей и фруктов. Продукт активных и здоровых людей. Это абсолютно новый продукт с оптимальной ценой и высоким качеством!',
+    '1100',
+    'vegy.jpg',
+    'vegy'
+);
+
+const thirdMenu = new MenuCard(
+    'Постное',
+    'Меню “Постное” - это тщательный подбор ингредиентов: полное отсутствие продуктов животного происхождения, молоко из миндаля, овса, кокоса или гречки, правильное количество белков за счет тофу и импортных вегетарианских стейков.',
+    '1270',
+    'post.jpg',
+    'post'
+);
+
+menuContainer.append(thirdMenu.createCard());
+menuContainer.append(firstMenu.createCard());
+menuContainer.append(secondMenu.createCard());
+
+
+
