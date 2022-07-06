@@ -100,12 +100,26 @@ const buttonsOpen = document.querySelectorAll('[data-model]'),
 function displayModal() {
     modalWindow.classList.toggle('hide');
     document.body.style.overflow = 'hidden';
+    clearInterval(modalTimeout);
 }
 
 function hideModal() {
     modalWindow.classList.toggle('hide');
     document.body.style.overflow = '';
 }
+
+// open modal throw time
+const modalTimeout = setTimeout(displayModal, 5000);
+
+// open in the end of the page
+function showModalByScroll() {
+    if (document.documentElement.scrollTop + window.innerHeight >= document.documentElement.scrollHeight - 1) {
+        displayModal();
+        window.removeEventListener('scroll', showModalByScroll);
+    }
+}
+
+window.addEventListener('scroll', showModalByScroll);
 
 // open modal window
 buttonsOpen.forEach(button => {
@@ -132,3 +146,5 @@ document.addEventListener('keydown', event => {
         hideModal();
     }
 });
+
+
