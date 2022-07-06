@@ -38,7 +38,7 @@ tabsContainer.addEventListener('click', (event) => {
 
 // Timer
 const deadline = new Date();
-// deadline.setDate(deadline.getDate() + 3);
+deadline.setDate(deadline.getDate() + 3);
 
 function getTimeRemaining(endTime) {
     const delta = endTime - new Date(),
@@ -90,3 +90,45 @@ function setClock(selector, endTime) {
 }
 
 setClock('.timer', deadline);
+
+
+// Modal window
+const buttonsOpen = document.querySelectorAll('[data-model]'),
+    buttonClose = document.querySelector('.modal__close'),
+    modalWindow = document.querySelector('.modal');
+
+function displayModal() {
+    modalWindow.classList.toggle('hide');
+    document.body.style.overflow = 'hidden';
+}
+
+function hideModal() {
+    modalWindow.classList.toggle('hide');
+    document.body.style.overflow = '';
+}
+
+// open modal window
+buttonsOpen.forEach(button => {
+    button.addEventListener('click', displayModal);
+});
+
+// close modal window
+modalWindow.addEventListener('click', event => {
+    const target = event.target;
+
+    console.log(target);
+
+    if (target.classList.contains('modal')) {
+        hideModal();
+    }
+
+    if (target == buttonClose) {
+        hideModal();
+    }
+});
+
+document.addEventListener('keydown', event => {
+    if (modalWindow.classList.contains('show') && event.key == 'Escape') {
+        hideModal();
+    }
+});
