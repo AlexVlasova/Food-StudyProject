@@ -94,22 +94,21 @@ setClock('.timer', deadline);
 
 // Modal window
 const buttonsOpen = document.querySelectorAll('[data-model]'),
-    buttonClose = document.querySelector('.modal__close'),
     modalWindow = document.querySelector('.modal');
 
 function displayModal() {
-    modalWindow.classList.toggle('hide');
+    modalWindow.classList.remove('hide');
     document.body.style.overflow = 'hidden';
     clearInterval(modalTimeout);
 }
 
 function hideModal() {
-    modalWindow.classList.toggle('hide');
+    modalWindow.classList.add('hide');
     document.body.style.overflow = '';
 }
 
 // open modal throw time
-const modalTimeout = setTimeout(displayModal, 5000);
+const modalTimeout = setTimeout(displayModal, 50000);
 
 // open in the end of the page
 function showModalByScroll() {
@@ -130,19 +129,13 @@ buttonsOpen.forEach(button => {
 modalWindow.addEventListener('click', event => {
     const target = event.target;
 
-    console.log(target);
-
-    if (target.classList.contains('modal')) {
-        hideModal();
-    }
-
-    if (target == buttonClose) {
+    if (target.classList.contains('modal') || target.classList.contains('modal__close')) {
         hideModal();
     }
 });
 
 document.addEventListener('keydown', event => {
-    if (modalWindow.classList.contains('show') && event.key == 'Escape') {
+    if (!modalWindow.classList.contains('hide') && event.key == 'Escape') {
         hideModal();
     }
 });
@@ -251,21 +244,42 @@ function postData(form) {
         const json = JSON.stringify(obj);
         request.send(json);
 
-        
+
 
         request.addEventListener('load', () => {
             if (request.status === 200) {
                 console.log(request.response);
-                statusMessage.textContent = message.success;
+                showThanksModal(message.success);
                 form.reset();
-                setTimeout(() => {
-                    statusMessage.remove();
-                }, 2000);
+                statusMessage.remove();
             } else {
-                statusMessage.textContent = message.fail;
+                showThanksModal(message.fail);
             }
         });
     });
+}
+
+function showThanksModal(message) {
+    const prevModalDialog = document.querySelector('.modal__dialog');
+    prevModalDialog.classList.add('hide');
+
+    displayModal();
+
+    const thanksModal = document.createElement('div');
+    thanksModal.classList.add('modal__dialog');
+    thanksModal.innerHTML = `
+        <div class="modal__content">
+            <div class="modal__close">×</div>
+            <div class="modal__title">${message}</div>
+        </div>
+    `;
+
+    document.querySelector('.modal').append(thanksModal);
+    setTimeout(() => {
+        thanksModal.remove();
+        prevModalDialog.classList.remove('hide');
+        hideModal();
+    }, 4000);
 }
 
 forms.forEach(form => {
