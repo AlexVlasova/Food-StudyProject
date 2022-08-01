@@ -211,7 +211,7 @@ menuContainer.append(secondMenu.createCard());
 const forms = document.querySelectorAll('form');
 
 const message = {
-    loading: 'Загрузка...',
+    loading: 'img/form/spinner.svg',
     success: 'Спасибо, мы скоро с вами свяжемся',
     fail: 'Что-то пошло не так...'
 }
@@ -220,8 +220,12 @@ function postData(form) {
     form.addEventListener('submit', (e) => {
         e.preventDefault();
 
-        const statusMessage = document.createElement('div');
-        statusMessage.textContent = message.loading;
+        const statusMessage = document.createElement('img');
+        statusMessage.src = message.loading;
+        statusMessage.style.cssText = `
+            display: block;
+            margin: 0 auto;
+        `;
         form.append(statusMessage);
 
         const request = new XMLHttpRequest();
