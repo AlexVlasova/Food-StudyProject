@@ -228,37 +228,39 @@ function postData(form) {
         `;
         form.append(statusMessage);
 
-        const request = new XMLHttpRequest();
-        request.open('POST', 'server.php');
+        // отправка данных с fetch
+        // использование promise
 
-        // Отправка данных FormData
-        //request.setRequestHeader('Content-type', 'multipart/form-data'); - устанавливать не нужно, если работаем с XML и FormData
-        // const formData = new FormData(form);
-        // request.send(formData);
-
-        // Отправка данных JSON
-        request.setRequestHeader('Content-type', 'application/json');
+        // Formdata
         const formData = new FormData(form);
+
+        // JSON
         const obj = {};
 
         formData.forEach((value, key) => {
             obj[key] = value;
         });
 
-        const json = JSON.stringify(obj);
-        request.send(json);
-
-
-
-        request.addEventListener('load', () => {
-            if (request.status === 200) {
-                console.log(request.response);
-                showThanksModal(message.success);
-                form.reset();
-                statusMessage.remove();
-            } else {
-                showThanksModal(message.fail);
-            }
+        fetch('http://localhost:3000/requests', {
+            method: 'POST',
+            headers: {
+                'Content-type': 'application/json'
+            },
+            body: JSON.stringify(obj)
+        })
+        .then(data => {
+            return data.text();
+        })
+        .then(data => {
+            console.log(data);
+            showThanksModal(message.success);
+            statusMessage.remove();
+        })
+        .catch(() => {
+            showThanksModal(message.fail);
+        })
+        .finally(() => {
+            form.reset();
         });
     });
 }

@@ -1,0 +1,22 @@
+{
+  "name": "udemy-course",
+  "version": "1.0.0",
+  "description": "Udemy course: 2 task",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/AlexVlasova/Food-StudyProject.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/AlexVlasova/Food-StudyProject/issues"
+  },
+  "homepage": "https://github.com/AlexVlasova/Food-StudyProject#readme",
+  "devDependencies": {
+    "json-server": "^0.17.0"
+  }
+}
