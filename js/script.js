@@ -155,8 +155,8 @@ class MenuCard {
 
     createCard() {
         const innerHTML = `
-                <img src="img/tabs/${this.img}" alt="${this.alt}">
-                <h3 class="menu__item-subtitle">Меню “${this.name}”</h3>
+                <img src="${this.img}" alt="${this.alt}">
+                <h3 class="menu__item-subtitle">${this.name}</h3>
                 <div class="menu__item-descr">${this.descr}</div>
                 <div class="menu__item-divider"></div>
                 <div class="menu__item-price">
@@ -177,34 +177,34 @@ class MenuCard {
 }
 
 const menuContainer = document.querySelector('.menu__field .container');
-const firstMenu = new MenuCard(
-    'Премиум',
-    'В меню “Премиум” мы используем не только красивый дизайн упаковки, но и качественное исполнение блюд. Красная рыба, морепродукты, фрукты - ресторанное меню без похода в ресторан!',
-    '1450',
-    'elite.jpg',
-    'elite'
-);
 
-const secondMenu = new MenuCard(
-    'Фитнес',
-    'Меню "Фитнес" - это новый подход к приготовлению блюд: больше свежих овощей и фруктов. Продукт активных и здоровых людей. Это абсолютно новый продукт с оптимальной ценой и высоким качеством!',
-    '1100',
-    'vegy.jpg',
-    'vegy'
-);
+const getData = async (url) => {
+    const data = await fetch(url);
 
-const thirdMenu = new MenuCard(
-    'Постное',
-    'Меню “Постное” - это тщательный подбор ингредиентов: полное отсутствие продуктов животного происхождения, молоко из миндаля, овса, кокоса или гречки, правильное количество белков за счет тофу и импортных вегетарианских стейков.',
-    '1270',
-    'post.jpg',
-    'post'
-);
+    if (!data.ok) {
+        throw new Error(`Server error: ${url}`);
+    }
 
-menuContainer.append(thirdMenu.createCard());
-menuContainer.append(firstMenu.createCard());
-menuContainer.append(secondMenu.createCard());
+    return await data.json();
+};
 
+getData('http://localhost:3000/menu')
+    .then(data => {
+        data.forEach(({img, altimg, title, descr, price}) => { // Деструктуризация объекта
+            const card = new MenuCard(
+                title,
+                descr,
+                price,
+                img,
+                altimg
+            );
+
+            menuContainer.append(card.createCard());
+        });
+    })
+    .catch((error) => {
+        console.error(error);
+    });
 
 // Forms
 
@@ -214,9 +214,25 @@ const message = {
     loading: 'img/form/spinner.svg',
     success: 'Спасибо, мы скоро с вами свяжемся',
     fail: 'Что-то пошло не так...'
-}
+};
 
-function postData(form) {
+const postData = async (url, data) => {
+    const res = await fetch(url, {
+        method: 'POST',
+        headers: {
+            'Content-type': 'application/json'
+        },
+        body: data
+    });
+
+    if (!res.ok) {
+        throw new Error(`Server error: ${url}`);
+    }
+
+    return await res.json();
+};
+
+function bindPostData(form) {
     form.addEventListener('submit', (e) => {
         e.preventDefault();
 
@@ -235,22 +251,10 @@ function postData(form) {
         const formData = new FormData(form);
 
         // JSON
-        const obj = {};
+        const jsonData = JSON.stringify(Object.fromEntries(formData.entries()));
+        console.log(jsonData);
 
-        formData.forEach((value, key) => {
-            obj[key] = value;
-        });
-
-        fetch('http://localhost:3000/requests', {
-            method: 'POST',
-            headers: {
-                'Content-type': 'application/json'
-            },
-            body: JSON.stringify(obj)
-        })
-        .then(data => {
-            return data.text();
-        })
+        postData('http://localhost:3000/requests', jsonData)
         .then(data => {
             console.log(data);
             showThanksModal(message.success);
@@ -289,5 +293,5 @@ function showThanksModal(message) {
 }
 
 forms.forEach(form => {
-    postData(form);
+    bindPostData(form);
 });
