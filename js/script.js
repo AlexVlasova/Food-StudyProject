@@ -295,3 +295,52 @@ function showThanksModal(message) {
 forms.forEach(form => {
     bindPostData(form);
 });
+
+
+// slider
+const slider = document.querySelector('.offer__slider'),
+    slides = slider.querySelectorAll('.offer__slide'),
+    arrowPrev = slider.querySelector('.offer__slider-prev'),
+    arrowNext = slider.querySelector('.offer__slider-next'),
+    currentSliderNumber = slider.querySelector('#current'),
+    totalSliderNumber = slider.querySelector('#total');
+
+let currentSlide = 0;
+const slideLength = slides.length;
+
+function initSlider() {
+    currentSliderNumber.textContent = getNumberFormat(`${currentSlide + 1}`);
+    totalSliderNumber.textContent = getNumberFormat(`${slideLength}`);
+
+    hideAllSlides(slides);
+    slides[currentSlide].classList.remove('hide');
+}
+
+function hideAllSlides(slides) {
+    slides.forEach(slide => {
+        slide.classList.add('hide');
+    });
+}
+
+function showSlide(n) {
+    hideAllSlides(slides);
+    slides[n].classList.remove('hide');
+}
+
+function showNextSlide() {
+    currentSlide = (currentSlide + 1) % slideLength;
+    showSlide(currentSlide);
+    currentSliderNumber.textContent = getNumberFormat(`${currentSlide + 1}`);
+}
+
+function showPrevSlide() {
+    currentSlide--;
+    currentSlide = currentSlide < 0 ? slideLength - 1 : currentSlide;
+    showSlide(currentSlide);
+    currentSliderNumber.textContent = getNumberFormat(`${currentSlide + 1}`);
+}
+
+initSlider();
+
+arrowPrev.addEventListener('click', showPrevSlide);
+arrowNext.addEventListener('click', showNextSlide);
