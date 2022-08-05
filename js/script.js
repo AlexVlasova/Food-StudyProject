@@ -359,3 +359,75 @@ initSlider();
 
 arrowPrev.addEventListener('click', showPrevSlide);
 arrowNext.addEventListener('click', showNextSlide);
+
+
+// Calculator
+const result = document.querySelector('.calculating__result span');
+let sex = 'female',
+    height, weight, age,
+    ratio = 1.375;
+
+function calcTotal() {
+    if (!sex || !height || !weight || !age || !ratio) {
+        result.textContent = '____';
+        return;
+    }
+
+    if (sex === 'female') {
+        result.textContent = Math.round((447.6 + (9.2 * weight) + (3.1 * height) - (4.3 * age)) * ratio);
+    } else {
+        result.textContent = Math.round((88.36 + (13.4 * weight) + (4.8 * height) - (5.7 * age)) * ratio);
+    }
+}
+
+calcTotal();
+
+function getStaticInfo(parentSelector, activeClass) {
+    const parent = document.querySelector(parentSelector),
+        elements = parent.querySelectorAll('div');
+
+    parent.addEventListener('click', e => {
+        if (e.target.classList.contains('calculating__choose-item')) {
+            if (e.target.getAttribute('data-ratio')) {
+                ratio = +e.target.getAttribute('data-ratio');
+            } else {
+                sex = e.target.getAttribute('id');
+            }
+    
+            elements.forEach(elem => {
+                elem.classList.remove(activeClass);
+            });
+    
+            e.target.classList.add(activeClass);
+        }
+
+        calcTotal();
+    });
+}
+
+function getInputInfo(inputSelector) {
+    const input = document.querySelector(inputSelector);
+
+    input.addEventListener('input', e => {
+        switch (input.getAttribute('id')) {
+            case 'height':
+                height = +input.value;
+                break;
+            case 'weight':
+                weight = +input.value;
+                break;
+            case 'age':
+                age = +input.value;
+                break;
+        }
+
+        calcTotal();
+    });
+}
+
+getInputInfo('#height');
+getInputInfo('#weight');
+getInputInfo('#age');
+getStaticInfo('#gender', 'calculating__choose-item_active');
+getStaticInfo('.calculating__choose_big', 'calculating__choose-item_active');
+
