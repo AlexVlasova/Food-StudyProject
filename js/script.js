@@ -305,7 +305,7 @@ const slider = document.querySelector('.offer__slider-wrapper'),
     arrowNext = document.querySelector('.offer__slider-next'),
     currentSliderNumber = document.querySelector('#current'),
     totalSliderNumber = document.querySelector('#total'),
-    slideWidth = window.getComputedStyle(slider).width;
+    slideWidth = +window.getComputedStyle(slider).width.replace(/\D/g, '');
 
 let currentSlide = 0;
 let offset = 0;
@@ -320,7 +320,7 @@ sliderInnerContainer.style.transition = '0.5s all';
 //
 
 slides.forEach((slide) => {
-    slide.style.width = slideWidth;
+    slide.style.width = slideWidth + 'px';
 });
 
 function initSlider() {
@@ -335,7 +335,7 @@ function showNextSlide() {
     if (currentSlide === 0) {
         offset = 0;
     } else {
-        offset += +slideWidth.slice(0,slideWidth.length - 2);
+        offset += slideWidth;
     }
 
     sliderInnerContainer.style.transform = `translateX(-${offset}px)`;
@@ -347,9 +347,9 @@ function showPrevSlide() {
     currentSliderNumber.textContent = getNumberFormat(`${currentSlide + 1}`);
 
     if (currentSlide === slideLength - 1) {
-        offset = +slideWidth.slice(0,slideWidth.length - 2) * currentSlide;
+        offset = slideWidth * currentSlide;
     } else {
-        offset -= +slideWidth.slice(0,slideWidth.length - 2);
+        offset -= slideWidth;
     }
 
     sliderInnerContainer.style.transform = `translateX(-${offset}px)`;
