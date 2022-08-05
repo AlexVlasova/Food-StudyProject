@@ -298,46 +298,61 @@ forms.forEach(form => {
 
 
 // slider
-const slider = document.querySelector('.offer__slider'),
+const slider = document.querySelector('.offer__slider-wrapper'),
+    sliderInnerContainer = slider.querySelector('.offer__slider-inner'),
     slides = slider.querySelectorAll('.offer__slide'),
-    arrowPrev = slider.querySelector('.offer__slider-prev'),
-    arrowNext = slider.querySelector('.offer__slider-next'),
-    currentSliderNumber = slider.querySelector('#current'),
-    totalSliderNumber = slider.querySelector('#total');
+    arrowPrev = document.querySelector('.offer__slider-prev'),
+    arrowNext = document.querySelector('.offer__slider-next'),
+    currentSliderNumber = document.querySelector('#current'),
+    totalSliderNumber = document.querySelector('#total'),
+    slideWidth = window.getComputedStyle(slider).width;
 
 let currentSlide = 0;
+let offset = 0;
 const slideLength = slides.length;
+
+
+// Идеально вынести в стили, но в этом проекте они готовые, редачить их неудобно
+slider.style.overflow = 'hidden';
+sliderInnerContainer.style.width = 100 * slideLength + '%';
+sliderInnerContainer.style.display = 'flex';
+sliderInnerContainer.style.transition = '0.5s all';
+//
+
+slides.forEach((slide) => {
+    slide.style.width = slideWidth;
+});
 
 function initSlider() {
     currentSliderNumber.textContent = getNumberFormat(`${currentSlide + 1}`);
     totalSliderNumber.textContent = getNumberFormat(`${slideLength}`);
-
-    hideAllSlides(slides);
-    slides[currentSlide].classList.remove('hide');
-}
-
-function hideAllSlides(slides) {
-    slides.forEach(slide => {
-        slide.classList.add('hide');
-    });
-}
-
-function showSlide(n) {
-    hideAllSlides(slides);
-    slides[n].classList.remove('hide');
 }
 
 function showNextSlide() {
     currentSlide = (currentSlide + 1) % slideLength;
-    showSlide(currentSlide);
     currentSliderNumber.textContent = getNumberFormat(`${currentSlide + 1}`);
+    
+    if (currentSlide === 0) {
+        offset = 0;
+    } else {
+        offset += +slideWidth.slice(0,slideWidth.length - 2);
+    }
+
+    sliderInnerContainer.style.transform = `translateX(-${offset}px)`;
 }
 
 function showPrevSlide() {
     currentSlide--;
     currentSlide = currentSlide < 0 ? slideLength - 1 : currentSlide;
-    showSlide(currentSlide);
     currentSliderNumber.textContent = getNumberFormat(`${currentSlide + 1}`);
+
+    if (currentSlide === slideLength - 1) {
+        offset = +slideWidth.slice(0,slideWidth.length - 2) * currentSlide;
+    } else {
+        offset -= +slideWidth.slice(0,slideWidth.length - 2);
+    }
+
+    sliderInnerContainer.style.transform = `translateX(-${offset}px)`;
 }
 
 initSlider();
