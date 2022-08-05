@@ -363,9 +363,9 @@ arrowNext.addEventListener('click', showNextSlide);
 
 // Calculator
 const result = document.querySelector('.calculating__result span');
-let sex = 'female',
+let sex = localStorage.getItem('sex') || 'female',
     height, weight, age,
-    ratio = 1.375;
+    ratio = localStorage.getItem('ratio') || 1.375;
 
 function calcTotal() {
     if (!sex || !height || !weight || !age || !ratio) {
@@ -381,6 +381,25 @@ function calcTotal() {
 }
 
 calcTotal();
+initStaticInfo('#gender', 'calculating__choose-item_active');
+initStaticInfo('.calculating__choose_big', 'calculating__choose-item_active');
+
+function initStaticInfo(parentSelector, activeClass) {
+    const elements = document.querySelectorAll(`${parentSelector} div`);
+
+    elements.forEach(elem => {
+        elem.classList.remove(activeClass);
+
+        if (elem.getAttribute('data-ratio') == ratio) {
+            elem.classList.add(activeClass);
+        } 
+        if (elem.getAttribute('id') === sex) {
+            elem.classList.add(activeClass);
+        }
+    });
+
+
+}
 
 function getStaticInfo(parentSelector, activeClass) {
     const parent = document.querySelector(parentSelector),
@@ -390,8 +409,10 @@ function getStaticInfo(parentSelector, activeClass) {
         if (e.target.classList.contains('calculating__choose-item')) {
             if (e.target.getAttribute('data-ratio')) {
                 ratio = +e.target.getAttribute('data-ratio');
+                localStorage.setItem('ratio', ratio);
             } else {
                 sex = e.target.getAttribute('id');
+                localStorage.setItem('sex', sex);
             }
     
             elements.forEach(elem => {
@@ -409,6 +430,12 @@ function getInputInfo(inputSelector) {
     const input = document.querySelector(inputSelector);
 
     input.addEventListener('input', e => {
+        if (/\D/.test(input.value)) {
+            input.style.border = '1px solid red';
+        } else {
+            input.style.border = '';
+        }
+
         switch (input.getAttribute('id')) {
             case 'height':
                 height = +input.value;
