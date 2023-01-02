@@ -1,5 +1,5 @@
 # Food-StudyProject
-Udemy course: 2 task
+Посмотреть итог можно здесь: https://alexvlasova.github.io/Food-StudyProject/
 
 Лендинг по продаже питания. Реализован весь js. Верстка готовая (редактировалась для реализации некоторых доработок).
 
